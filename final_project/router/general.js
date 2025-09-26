@@ -4,6 +4,61 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+// Task 10: 
+public_users.get('/async-books', async function (req, res) {
+    try {
+      const response = await new Promise((resolve) => {
+        resolve({ data: books });
+      });
+  
+      return res.send(JSON.stringify(response.data, null, 4));
+    } 
+    catch (err) {
+      return res.status(500).json({ message: "Error fetching books" });
+    }
+  });
+
+// Task 11:
+public_users.get('/isbn-promise/:isbn', function (req, res) {
+    const isbn = req.params.isbn;
+  
+    new Promise((resolve, reject) => {
+      const book = books[isbn];
+      if (book) {
+        resolve({ data: book });
+      } else {
+        reject({ message: "Book not found" });
+      }
+    })
+      .then((response) => {
+        res.send(JSON.stringify(response.data, null, 4));
+      })
+      .catch((error) => {
+        res.status(404).json({ message: error.message });
+      });
+  });
+
+// Task 12:
+public_users.get('/author-async/:author', async function (req, res) {
+    try {
+      const author = req.params.author.toLowerCase();
+  
+      const response = await new Promise((resolve) => {
+        const matchingBooks = Object.keys(books)
+          .filter((key) => books[key].author && books[key].author.toLowerCase() === author)
+          .map((key) => books[key]);
+        resolve({ data: matchingBooks });
+      });
+  
+      if (response.data.length > 0) {
+        return res.send(JSON.stringify(response.data, null, 4));
+      } else {
+        return res.status(404).json({ message: "No books found for this author" });
+      }
+    } catch (err) {
+      return res.status(500).json({ message: "Error fetching books by author" });
+    }
+  });
 
 public_users.post("/register", (req,res) => {
   //Task 6:
