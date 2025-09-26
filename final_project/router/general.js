@@ -143,7 +143,7 @@ public_users.get('/author/:author',function (req, res) {
     return res.send(JSON.stringify(matchingBooks, null, 4));
   }
 
-  return res.status(300).json({message: "Yet to be implemented"});
+  return res.status(404).json({ message: "No books found" });
 });
 
 // Get all books based on title
@@ -164,7 +164,7 @@ public_users.get('/title/:title',function (req, res) {
   if (matchingBooks.length > 0) {
     return res.send(JSON.stringify(matchingBooks, null, 4));
   }
-  return res.status(300).json({message: "Yet to be implemented"});
+  return res.status(404).json({ message: "No books found with this title" });
 });
 
 //  Get book review

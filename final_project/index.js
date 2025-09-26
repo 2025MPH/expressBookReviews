@@ -12,7 +12,9 @@ app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUni
 
 app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
-});
+if (!req.session.authorization || !req.session.authorization.token) {
+    return res.status(401).json({ message: "User not logged in" });
+}});
  
 const PORT =5000;
 
