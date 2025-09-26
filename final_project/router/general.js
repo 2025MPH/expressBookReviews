@@ -60,6 +60,29 @@ public_users.get('/author-async/:author', async function (req, res) {
     }
   });
 
+// Task 13:
+public_users.get('/title-promise/:title', function (req, res) {
+    const title = req.params.title.toLowerCase();
+  
+    new Promise((resolve, reject) => {
+      const matchingBooks = Object.keys(books)
+        .filter((key) => books[key].title && books[key].title.toLowerCase() === title)
+        .map((key) => books[key]);
+  
+      if (matchingBooks.length > 0) {
+        resolve({ data: matchingBooks });
+      } else {
+        reject({ message: "No books found with this title" });
+      }
+    })
+      .then((response) => {
+        res.send(JSON.stringify(response.data, null, 4));
+      })
+      .catch((error) => {
+        res.status(404).json({ message: error.message });
+      });
+  });
+
 public_users.post("/register", (req,res) => {
   //Task 6:
   const username = req.body.username;
